@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JOBPAD</title>
+<meta name="description" content="Clock in. Get stocks. Every token launched on JOBPAD is a job that pays its holders in a real stock on Robinhood Chain.">
+<meta property="og:title" content="JOBPAD">
+<meta property="og:description" content="Clock in. Get stocks. Every token is a job. Launch on Pons, Robinhood Chain.">
+<meta property="og:image" content="assets/banner.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=1">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=1">
+<style>
+@font-face{font-family:'Plex';src:url(assets/fonts/IBMPlexMono-Regular.woff2) format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Plex';src:url(assets/fonts/IBMPlexMono-Medium.woff2) format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'Plex';src:url(assets/fonts/IBMPlexMono-Bold.woff2) format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:'Px';src:url(assets/fonts/PressStart2P.woff2) format('woff2');font-display:swap}
+:root{--bg:#060606;--panel:#0b0b0b;--line:#1f1f1d;--line2:#2c2c29;--tx:#ecece8;--dim:#8a8a84;--dim2:#55554f;--am:#ffb000;--am2:#7a5400;--am3:#2a1d00}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:'Plex',ui-monospace,Menlo,monospace;font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--am);color:#000}
+.px{font-family:'Px',monospace;line-height:1.6}
+.am{color:var(--am)}.dim{color:var(--dim)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;height:52px;display:flex;align-items:center;justify-content:center;gap:34px;background:rgba(6,6,6,.86);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);z-index:50;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+nav a{color:var(--dim);padding:6px 2px;position:relative;cursor:pointer}
+nav a:hover,nav a.on{color:var(--tx)}
+nav a.on:after{content:'';position:absolute;left:0;right:0;bottom:-2px;height:2px;background:var(--am)}
+nav .snd b{color:var(--am)}
+@media(max-width:760px){nav{gap:16px;font-size:10px;overflow-x:auto;justify-content:flex-start;padding:0 16px}}
+/* hero */
+#hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 0 80px;overflow:hidden}
+#wall{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:.9}
+#hero .in{position:relative;z-index:2;max-width:900px}
+#hero canvas.mark{width:120px;height:120px;image-rendering:pixelated;display:block;margin:0 auto 34px}
+h1{margin:0;font-size:clamp(26px,5.2vw,58px);line-height:1.35;font-weight:400}
+h1 .l2{color:var(--am)}
+.sub{color:var(--dim);max-width:640px;margin:30px auto 0;font-size:15px}
+.sub b{color:var(--tx);font-weight:500}
+.btns{display:flex;gap:14px;justify-content:center;margin-top:40px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border:1px solid var(--line2);background:#0e0e0e;color:var(--tx);font-size:12px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:.15s;font-family:inherit}
+.btn:hover{border-color:var(--am);color:var(--am)}
+.btn.am{background:var(--am);color:#000;border-color:var(--am);font-weight:700}
+.btn.am:hover{background:#ffc63a;color:#000}
+.chip{display:inline-flex;align-items:center;gap:10px;margin-top:34px;padding:8px 14px;border:1px solid var(--line2);font-size:11px;letter-spacing:.12em;color:var(--dim);text-transform:uppercase;background:rgba(6,6,6,.7)}
+.chip i{width:7px;height:7px;background:var(--am);display:inline-block;animation:bl 1.4s steps(1) infinite}
+@keyframes bl{50%{opacity:.15}}
+.chip.ca{cursor:pointer;color:var(--tx)}
+/* ticker */
+#tape{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#080808;overflow:hidden;white-space:nowrap;font-size:12px;letter-spacing:.06em;height:44px;display:flex;align-items:center}
+#tape .lab{padding:0 18px;color:var(--am);border-right:1px solid var(--line);height:100%;display:flex;align-items:center;letter-spacing:.18em;font-size:10px;flex:none;background:#080808;z-index:2}
+#tape .roll{display:flex;gap:0;animation:roll 60s linear infinite;will-change:transform}
+#tape .roll:hover{animation-play-state:paused}
+@keyframes roll{to{transform:translateX(-50%)}}
+#tape .q{padding:0 26px;color:var(--dim);flex:none}
+#tape .q b{color:var(--tx);font-weight:500;margin-right:8px}
+#tape .q .u{color:#6fe39b}#tape .q .d{color:#ff5b5b}
+/* sections */
+section{padding:110px 0;border-bottom:1px solid var(--line)}
+.eyebrow{font-size:10px;letter-spacing:.22em;color:var(--am);text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.eyebrow:before{content:'';width:6px;height:6px;background:var(--am);display:inline-block}
+h2{margin:18px 0 0;font-size:clamp(20px,3.2vw,34px);font-weight:400;line-height:1.5}
+h2 .am{color:var(--am)}
+.lead{color:var(--dim);max-width:560px;margin-top:18px;font-size:14px}
+.head2{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;flex-wrap:wrap}
+.head2 .lead{margin-top:0;text-align:right}
+@media(max-width:760px){.head2 .lead{text-align:left}}
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);margin-top:56px}
+.step{padding:34px 28px 36px;border-right:1px solid var(--line);position:relative;transition:.2s}
+.step:last-child{border-right:0}
+.step:hover{background:#0c0c0c}
+.step svg{width:44px;height:44px;display:block}
+.step .n{font-size:10px;color:var(--dim2);letter-spacing:.2em;margin-top:26px}
+.step h3{margin:12px 0 10px;font-size:15px;font-weight:700}
+.step p{margin:0;color:var(--dim);font-size:13px}
+@media(max-width:900px){.steps{grid-template-columns:1fr 1fr}.step:nth-child(2){border-right:0}.step:nth-child(-n+2){border-bottom:1px solid var(--line)}}
+@media(max-width:520px){.steps{grid-template-columns:1fr}.step{border-right:0;border-bottom:1px solid var(--line)}.step:last-child{border-bottom:0}}
+/* job board */
+table{width:100%;border-collapse:collapse;margin-top:44px;font-size:13px}
+th{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim2);text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);font-weight:500}
+td{padding:18px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr.job:hover td{background:#0b0b0b}
+td .t{font-weight:700}
+td .s{color:var(--dim);font-size:12px}
+.tag{display:inline-block;padding:3px 8px;border:1px solid var(--line2);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.tag.am{border-color:var(--am2);color:var(--am)}
+.tag.hi{border-color:#2f6b45;color:#6fe39b}
+.empty{border:1px dashed var(--line2);padding:40px;text-align:center;color:var(--dim);margin-top:24px;font-size:13px}
+.empty b{color:var(--tx);display:block;margin-bottom:8px;font-weight:500}
+/* post a job */
+.post{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;margin-top:56px;align-items:start}
+@media(max-width:860px){.post{grid-template-columns:1fr}}
+.form{border:1px solid var(--line);padding:30px;background:var(--panel)}
+.f{margin-bottom:22px}
+.f label{display:block;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim2);margin-bottom:8px}
+.f input,.f select,.f textarea{width:100%;background:#050505;border:1px solid var(--line2);color:var(--tx);padding:12px 14px;font-family:inherit;font-size:14px;outline:none;border-radius:0;-webkit-appearance:none}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--am)}
+.f textarea{resize:vertical;min-height:70px}
+.f .hint{font-size:11px;color:var(--dim2);margin-top:6px}
+.f .hint.err{color:#ff5b5b}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{border:1px solid var(--line2);background:#080808;padding:26px;position:sticky;top:80px}
+.card .k{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim2)}
+.card .title{font-size:22px;font-weight:700;margin:6px 0 2px;word-break:break-word}
+.card .tick{color:var(--am);font-size:14px}
+.card .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px;border-top:1px solid var(--line);padding-top:18px}
+.card .grid div span{display:block;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim2)}
+.card .grid div b{font-weight:500}
+.card .desc{margin-top:18px;padding:12px;border:1px dashed var(--line2);font-size:12px;color:var(--dim);white-space:pre-wrap;word-break:break-word}
+.card .cbtns{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.card .cbtns .btn{flex:1;justify-content:center;padding:12px 14px;font-size:11px}
+.ok{font-size:11px;color:#6fe39b;margin-top:10px;min-height:16px}
+/* clock in */
+.clock{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:56px;align-items:stretch}
+@media(max-width:860px){.clock{grid-template-columns:1fr}}
+.punch{border:1px solid var(--line);background:var(--panel);padding:34px;display:flex;flex-direction:column;align-items:center;text-align:center;justify-content:center}
+.punch canvas{width:144px;height:144px;image-rendering:pixelated}
+.time{font-size:clamp(34px,5vw,56px);color:var(--am);margin:22px 0 4px;letter-spacing:.04em}
+.date{color:var(--dim);font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+.punch .btn{margin-top:26px;padding:16px 34px;font-size:13px}
+.punch .st{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:30px;width:100%;border-top:1px solid var(--line);padding-top:22px}
+.punch .st span{display:block;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim2)}
+.punch .st b{font-size:18px;font-weight:500}
+.receipt{border:1px solid var(--line);background:#080808;padding:26px 30px;font-size:12px;position:relative;overflow:hidden;min-height:320px}
+.receipt .k{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim2);display:flex;justify-content:space-between}
+.receipt ol{list-style:none;padding:0;margin:18px 0 0;max-height:330px;overflow:auto}
+.receipt li{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line);color:var(--dim)}
+.receipt li b{color:var(--tx);font-weight:500}
+.receipt li .in{color:#6fe39b}.receipt li .out{color:var(--am)}
+.receipt .none{color:var(--dim2);padding:30px 0;text-align:center}
+/* token */
+.tok{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);margin-top:56px}
+.tok div{padding:26px;border-right:1px solid var(--line)}
+.tok div:last-child{border-right:0}
+.tok span{display:block;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim2)}
+.tok b{display:block;font-size:20px;font-weight:500;margin-top:8px}
+.tok small{display:block;color:var(--dim);font-size:12px;margin-top:6px}
+@media(max-width:860px){.tok{grid-template-columns:1fr 1fr}.tok div:nth-child(2){border-right:0}.tok div:nth-child(-n+2){border-bottom:1px solid var(--line)}}
+.road{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:22px}
+@media(max-width:860px){.road{grid-template-columns:1fr}}
+.road div{border:1px solid var(--line);padding:24px}
+.road .tag{margin-bottom:14px}
+.road p{margin:0;color:var(--dim);font-size:13px}
+.road p b{color:var(--tx);font-weight:500;display:block;margin-bottom:6px}
+.links{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
+.ca{margin-top:34px;border:1px solid var(--line2);padding:16px 18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:13px;cursor:pointer;background:#080808}
+.ca .k{font-size:10px;letter-spacing:.2em;color:var(--am)}
+.ca code{color:var(--tx);word-break:break-all;font-family:inherit}
+.ca .cp{margin-left:auto;font-size:10px;letter-spacing:.18em;color:var(--dim)}
+/* log */
+#log{padding:40px 0 60px;font-size:12px;color:var(--dim2)}
+#log .k{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim2);margin-bottom:12px}
+#log pre{margin:0;white-space:pre-wrap;font-family:inherit;color:var(--dim2);line-height:1.8;max-height:150px;overflow:hidden}
+#log pre .a{color:var(--am)}
+.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim2);padding:26px 0 40px;border-top:1px solid var(--line)}
+.r{opacity:0;transform:translateY(14px);transition:opacity .7s,transform .7s}
+.r.v{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<script>
+// Fill when launched. Rows and links render only when set.
+const CONFIG={ca:'',x:'',pool:'',chart:'',launchpad:'https://ponsvault.com/launch',payroll:''};
+// Jobs launched through JOBPAD. Add {no,title,ticker,pays,ca,link} as they go live.
+const JOBS=[];
+</script>
+
+<nav id="nav">
+  <a href="#board">Jobs</a><a href="#how">How it works</a><a href="#clock">Clock in</a><a href="#post">Post a job</a><a href="#token">Token</a><a id="navx" href="#" target="_blank" rel="noopener" style="display:none">X</a><a class="snd" id="snd">Snd <b>off</b></a>
+</nav>
+
+<header id="hero">
+  <canvas id="wall"></canvas>
+  <div class="in">
+    <canvas class="mark" id="mark0" width="24" height="24"></canvas>
+    <h1 class="px">Clock in.<br><span class="l2">Get stocks.</span></h1>
+    <p class="sub">Every token launched on JOBPAD is a <b>job</b>. Hold it and you're on the payroll: every trade on the job pays a fee, and the payroll pays holders in the <b>real stock</b> the job is paired to.</p>
+    <div class="btns"><a class="btn am" href="#post">Post a job</a><a class="btn" href="#clock">Clock in</a></div>
+    <div class="chip" id="cachip"><i></i><span id="cachipt">CA — coming soon</span></div>
+  </div>
+</header>
+
+<div id="tape"><div class="lab">Pays in</div><div class="roll" id="roll"></div></div>
+
+<section id="how">
+  <div class="wrap">
+    <div class="eyebrow r">The shift</div>
+    <h2 class="r">Four steps. <span class="am">Only the first one</span> is work.</h2>
+    <p class="lead r">You post a job or you clock in. Trades on the job pay the fee. The payroll pays it out. The job never stops hiring.</p>
+    <div class="steps r" id="steps"></div>
+  </div>
+</section>
+
+<section id="board">
+  <div class="wrap">
+    <div class="head2 r"><div><div class="eyebrow">Job board</div><h2>Open jobs <span class="am" id="jobcount">0</span></h2></div>
+      <p class="lead">Every row is a token on Pons with a payroll wallet as its fee recipient. Read the address on chain, not the title.</p></div>
+    <div id="boardwrap" class="r"></div>
+  </div>
+</section>
+
+<section id="post">
+  <div class="wrap">
+    <div class="eyebrow r">Post a job</div>
+    <h2 class="r">Name it. Pick what it <span class="am">pays in</span>. Sign once.</h2>
+    <p class="lead r">The card on the right is the job's listing. Copy it into the description field on Pons and set the payroll wallet as the fee recipient in the same transaction.</p>
+    <div class="post r">
+      <form class="form" id="form" autocomplete="off">
+        <div class="f"><label>Job title <span class="dim">/ token name</span></label><input id="ftitle" maxlength="32" placeholder="e.g. Night Shift"></div>
+        <div class="row2">
+          <div class="f"><label>Ticker</label><input id="ftick" maxlength="8" placeholder="SHIFT" style="text-transform:uppercase"><div class="hint" id="tickhint">2–8 letters</div></div>
+          <div class="f"><label>Pays in</label><select id="fpays"></select></div>
+        </div>
+        <div class="f"><label>One line <span class="dim">/ what the job is</span></label><textarea id="fdesc" maxlength="140" placeholder="Show up. Hold. Get paid in $SPY."></textarea><div class="hint"><span id="dcount">0</span>/140</div></div>
+        <div class="f"><label>Payroll wallet <span class="dim">/ fee recipient</span></label><input id="fwallet" maxlength="42" placeholder="0x… the wallet that pays the job"><div class="hint" id="whint">Set this address as the creator fee recipient on Pons. It receives 70% of every trade fee in the stock the job pays in.</div></div>
+      </form>
+      <div class="card" id="card">
+        <div class="k">Job listing · JOBPAD</div>
+        <div class="title" id="ctitle">Night Shift</div>
+        <div class="tick" id="ctick">$SHIFT</div>
+        <div class="grid">
+          <div><span>Pays in</span><b id="cpays">$SPY</b></div>
+          <div><span>Fee</span><b>1% / trade</b></div>
+          <div><span>To payroll</span><b>70% of fees</b></div>
+          <div><span>Chain</span><b>Robinhood Chain</b></div>
+        </div>
+        <div class="desc" id="cdesc"></div>
+        <div class="cbtns"><button class="btn am" id="copyjob" type="button">Copy listing</button><a class="btn" id="openpons" href="https://ponsvault.com/launch" target="_blank" rel="noopener">Open Pons</a></div>
+        <div class="cbtns"><a class="btn" id="tweetjob" href="#" target="_blank" rel="noopener" style="flex:1">Post the job on X</a></div>
+        <div class="ok" id="cok"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="clock">
+  <div class="wrap">
+    <div class="eyebrow r">Clock in</div>
+    <h2 class="r">The clock on the wall <span class="am">is real.</span></h2>
+    <p class="lead r">Punch in when you start holding, punch out when you're done. The receipt stays on this device. The payroll doesn't care about your hours — it cares that you're on it.</p>
+    <div class="clock r">
+      <div class="punch">
+        <canvas id="mark1" width="24" height="24"></canvas>
+        <div class="time" id="tnow">--:--:--</div>
+        <div class="date" id="tdate">—</div>
+        <button class="btn am" id="punch" type="button">Punch in</button>
+        <div class="st"><div><span>Status</span><b id="pstat">Off the clock</b></div><div><span>Punches</span><b id="pcount">0</b></div><div><span>Hours on the clock</span><b id="phours">0.0</b></div></div>
+      </div>
+      <div class="receipt"><div class="k"><span>Time card · this device</span><span id="rid">No. 0000</span></div><ol id="rlist"></ol></div>
+    </div>
+  </div>
+</section>
+
+<section id="token">
+  <div class="wrap">
+    <div class="eyebrow r">Token</div>
+    <h2 class="r">$JOBPAD is <span class="am">job #0001.</span></h2>
+    <p class="lead r">The board's own token, launched on Pons like every job after it. Its payroll pays in $SPY.</p>
+    <div class="tok r">
+      <div><span>Pays in</span><b>$SPY</b><small>The stock everyone already owns.</small></div>
+      <div><span>Fee</span><b>1% / trade</b><small>70% to the payroll, 30% to Pons.</small></div>
+      <div><span>Supply</span><b>1,000,000,000</b><small>Fixed. No mint.</small></div>
+      <div><span>Pre-mine</span><b>None</b><small>Anything the team holds it bought on the curve.</small></div>
+    </div>
+    <div class="road r">
+      <div><span class="tag am">Live</span><p><b>The board</b>This page: the job listing card, the time clock, live quotes for every stock a job can pay in.</p></div>
+      <div><span class="tag">Next</span><p><b>Auto-listing</b>Jobs launched on Pons with a JOBPAD payroll wallet show up on the board by themselves, read from chain.</p></div>
+      <div><span class="tag">Later</span><p><b>Payroll contract</b>A contract that sweeps the payroll and pays holders on chain, with no human in the loop.</p></div>
+    </div>
+    <div class="ca r" id="carow" style="display:none"><span class="k">CA</span><code id="catext"></code><span class="cp" id="cacp">Copy</span></div>
+    <div class="links r" id="links"></div>
+  </div>
+</section>
+
+<div id="log"><div class="wrap"><div class="k">Payroll log</div><pre id="logpre"></pre>
+<div class="foot"><span>JOBPAD · Robinhood Chain</span><span>Check the address, not the ticker.</span></div></div></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const PAYS=['SPY','NVDA','TSLA','AAPL','GOOGL','AMZN','MSFT','META','AMD','GME','COIN','QQQ','NFLX','MSTR','HIMS','COST','RDDT','GLD'];
+/* ---------- log ---------- */
+const LOG=[];function log(s,a){LOG.push((a?'<span class="a">':'')+`[${new Date().toISOString().slice(11,19)}] ${s}`+(a?'</span>':''));if(LOG.length>7)LOG.shift();$('#logpre').innerHTML=LOG.join('\n');}
+log('jobpad terminal up · payroll idle',1);
+/* ---------- sound ---------- */
+let AC=null,SND=false,hum=null;
+function beep(f=880,d=.05,g=.05){if(!SND)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),v=AC.createGain();o.type='square';o.frequency.value=f;v.gain.value=g;o.connect(v);v.connect(AC.destination);o.start();v.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+d);o.stop(AC.currentTime+d)}catch(e){}}
+$('#snd').onclick=()=>{SND=!SND;$('#snd').innerHTML='Snd <b>'+(SND?'on':'off')+'</b>';if(SND){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();AC.resume();if(!hum){hum=AC.createOscillator();const v=AC.createGain();hum.type='sawtooth';hum.frequency.value=50;v.gain.value=.012;const f=AC.createBiquadFilter();f.type='lowpass';f.frequency.value=140;hum.connect(f);f.connect(v);v.connect(AC.destination);hum.start();hum.__g=v}else hum.__g.gain.value=.012}catch(e){}beep(660,.08)}else if(hum)hum.__g.gain.value=0;log('sound '+(SND?'on':'off'))};
+document.addEventListener('click',e=>{if(e.target.closest('.btn,nav a'))beep(1200,.03,.03)});
+/* ---------- pixel mark (live hands) ---------- */
+function drawMark(c){const g=c.getContext('2d');g.clearRect(0,0,24,24);const cx=11.5,cy=11.5,r=10.2;g.fillStyle='#ecece8';for(let y=0;y<24;y++)for(let x=0;x<24;x++){const d=Math.hypot(x-cx,y-cy);if(Math.abs(d-r)<0.95)g.fillRect(x,y,1,1)}
+  const n=new Date();const h=(n.getHours()%12)+n.getMinutes()/60,m=n.getMinutes()+n.getSeconds()/60;g.fillStyle='#ffb000';
+  const hand=(ang,len,w)=>{for(let t=0;t<=len;t+=.5){const x=Math.round(11.5+Math.sin(ang)*t-.5),y=Math.round(11.5-Math.cos(ang)*t-.5);g.fillRect(x,y,w,w)}};
+  hand(m/60*Math.PI*2,8.5,2);hand(h/12*Math.PI*2,5.5,2);}
+const marks=[...document.querySelectorAll('#mark0,#mark1')];function tickMarks(){marks.forEach(drawMark)}tickMarks();setInterval(tickMarks,1000);
+/* ---------- ascii wall ---------- */
+(function(){const c=$('#wall'),g=c.getContext('2d');const CH='0123456789$.:%#=+-IN OUT JOB PAY SPY NVDA TSLA'.split('');let W,H,cols,rows,grid=[];function size(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;cols=Math.ceil(W/14);rows=Math.ceil(H/22);grid=[];for(let i=0;i<cols*rows;i++)grid.push(Math.random()<.35?CH[Math.random()*CH.length|0]:' ')}size();addEventListener('resize',size);
+  let t=0;function frame(){t++;g.clearRect(0,0,W,H);g.font='11px Plex, monospace';for(let i=0;i<Math.max(4,cols*rows/400|0);i++){const k=Math.random()*grid.length|0;grid[k]=Math.random()<.4?CH[Math.random()*CH.length|0]:' '}
+    for(let r=0;r<rows;r++)for(let q=0;q<cols;q++){const ch=grid[r*cols+q];if(ch===' ')continue;const cx=q*14+7,cy=r*22+11;const d=Math.hypot((cx-W/2)/(W*.5),(cy-H/2)/(H*.5));const a=Math.max(0,.22-d*.16);g.fillStyle=(Math.random()<.003)?'rgba(255,176,0,.55)':`rgba(140,140,134,${a})`;g.fillText(ch,cx,cy)}
+    requestAnimationFrame(frame)}frame()})();
+/* ---------- steps with pixel icons ---------- */
+const ICONS={post:['............','.##########.','.#........#.','.#.oooo...#.','.#........#.','.#.######.#.','.#........#.','.#.######.#.','.#........#.','.#.###....#.','.#........#.','.##########.'],
+ badge:['....####....','...#....#...','...#....#...','.##########.','.#........#.','.#..oooo..#.','.#..oooo..#.','.#........#.','.#.######.#.','.#........#.','.##########.','............'],
+ fee:['............','....####....','...#....#...','..#..oo..#..','..#.o..o.#..','..#.o....#..','..#..oo..#..','..#....o.#..','..#.o..o.#..','..#..oo..#..','...#....#...','....####....'],
+ pay:['............','.##########.','.#........#.','.#.oo.....#.','.#.oo..##.#.','.#........#.','.##########.','...#....#...','...#.oo.#...','...#.oo.#...','...######...','............']};
+function icon(k){const rows=ICONS[k];let s='';rows.forEach((row,y)=>{[...row].forEach((ch,x)=>{if(ch==='#')s+=`<rect x="${x}" y="${y}" width="1" height="1" fill="#ecece8"/>`;else if(ch==='o')s+=`<rect x="${x}" y="${y}" width="1" height="1" fill="#ffb000"/>`})});return `<svg viewBox="0 0 12 12" shape-rendering="crispEdges">${s}</svg>`}
+const STEPS=[['post','Post a job','Anyone launches a job on Pons: a name, a ticker, and the stock it pays in. Its payroll wallet goes in as the fee recipient, in the same transaction.'],
+ ['badge','Clock in','Buy the job\'s token. That\'s your badge. No staking, nothing to lock, no list to join.'],
+ ['fee','The shift','Every trade on the job pays a 1% fee. 70% of it lands in the payroll wallet, already in the stock the job pays in.'],
+ ['pay','Payday','The payroll pays what it collected out to holders, pro rata, in that stock. Not in the job\'s own token.']];
+$('#steps').innerHTML=STEPS.map((s,i)=>`<div class="step">${icon(s[0])}<div class="n">0${i+1}</div><h3>${s[1]}</h3><p>${s[2]}</p></div>`).join('');
+/* ---------- job board ---------- */
+function board(){const rows=[];if(CONFIG.ca||true)rows.push({no:'0001',title:'JOBPAD',ticker:'JOBPAD',pays:'SPY',ca:CONFIG.ca,link:CONFIG.pool||(CONFIG.ca?'https://ponsfamily.com/launchpad/'+CONFIG.ca:''),first:true});
+  JOBS.forEach(j=>rows.push(j));$('#jobcount').textContent=rows.filter(r=>r.ca).length;
+  const live=rows.filter(r=>r.ca);const html=`<table><thead><tr><th>No.</th><th>Job</th><th>Pays in</th><th>Status</th><th>Payroll</th><th></th></tr></thead><tbody>`+rows.map(r=>`<tr class="job"><td class="dim">#${r.no}</td><td><div class="t">${r.title}</div><div class="s">$${r.ticker}</div></td><td><span class="tag am">$${r.pays}</span></td><td>${r.ca?'<span class="tag hi">Hiring</span>':'<span class="tag">CA coming soon</span>'}</td><td class="s">${r.ca?'70% of fees → payroll':'—'}</td><td style="text-align:right">${r.ca?`<a class="tag" href="${r.link}" target="_blank" rel="noopener">Open on Pons</a>`:''}</td></tr>`).join('')+`</tbody></table>`+(live.length?'':`<div class="empty"><b>No job is hiring yet.</b>The first one is $JOBPAD itself. When its address exists it goes here first.</div>`);
+  $('#boardwrap').innerHTML=html}board();
+/* ---------- post a job form ---------- */
+$('#fpays').innerHTML=PAYS.map(p=>`<option value="${p}">$${p}</option>`).join('');
+const F={t:$('#ftitle'),k:$('#ftick'),p:$('#fpays'),d:$('#fdesc'),w:$('#fwallet')};
+function listing(){const t=F.t.value.trim()||'Night Shift',k=(F.k.value.trim()||'SHIFT').toUpperCase().replace(/[^A-Z0-9]/g,''),p=F.p.value,d=F.d.value.trim()||`Show up. Hold. Get paid in $${p}.`,w=F.w.value.trim();
+  return {t,k,p,d,w,text:`JOBPAD job #${String(JOBS.length+2).padStart(4,'0')} · ${t} ($${k})\n${d}\nPays in $${p}. 1% fee per trade, 70% to the payroll${w?` (${w})`:''}.\njobpad · Robinhood Chain`}}
+function render(){const L=listing();$('#ctitle').textContent=L.t;$('#ctick').textContent='$'+L.k;$('#cpays').textContent='$'+L.p;$('#cdesc').textContent=L.text;$('#dcount').textContent=F.d.value.length;
+  const okk=/^[A-Z0-9]{2,8}$/.test(L.k);$('#tickhint').textContent=okk?'2–8 letters':'ticker: 2–8 letters or digits';$('#tickhint').className='hint'+(okk?'':' err');
+  const okw=!L.w||/^0x[0-9a-fA-F]{40}$/.test(L.w);$('#whint').className='hint'+(okw?'':' err');$('#whint').textContent=okw?'Set this address as the creator fee recipient on Pons. It receives 70% of every trade fee in the stock the job pays in.':'that is not a 0x address (40 hex chars)';
+  $('#tweetjob').href='https://x.com/intent/tweet?text='+encodeURIComponent(`New job on JOBPAD: ${L.t} ($${L.k}) — pays in $${L.p}.\n${L.d}\nClock in on Pons, Robinhood Chain.`+(CONFIG.x?'\n'+location.origin:''))}
+Object.values(F).forEach(el=>el.addEventListener('input',render));render();
+$('#copyjob').onclick=async()=>{const L=listing();try{await navigator.clipboard.writeText(L.text);$('#cok').textContent='listing copied · paste it into the description on Pons';log(`listing copied · ${L.t} ($${L.k}) pays in $${L.p}`,1)}catch(e){$('#cok').textContent='select the listing above and copy it';}setTimeout(()=>$('#cok').textContent='',4000)};
+$('#openpons').href=CONFIG.launchpad;$('#openpons').addEventListener('click',()=>log('opening pons launch'));
+/* ---------- clock in ---------- */
+const KEY='jobpad.timecard';let punches=[];try{punches=JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){punches=[]}
+function two(n){return String(n).padStart(2,'0')}
+function clockTick(){const n=new Date();$('#tnow').textContent=`${two(n.getHours())}:${two(n.getMinutes())}:${two(n.getSeconds())}`;$('#tdate').textContent=n.toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});renderCard()}
+function hours(){let h=0;for(let i=0;i<punches.length;i+=2){const a=punches[i].t,b=punches[i+1]?punches[i+1].t:Date.now();h+=(b-a)/36e5}return h}
+function renderCard(){const on=punches.length%2===1;$('#pstat').textContent=on?'On the clock':'Off the clock';$('#pstat').style.color=on?'#6fe39b':'';$('#punch').textContent=on?'Punch out':'Punch in';$('#pcount').textContent=punches.length;$('#phours').textContent=hours().toFixed(1);
+  $('#rid').textContent='No. '+String(Math.min(9999,punches.length)).padStart(4,'0');
+  $('#rlist').innerHTML=punches.length?punches.slice().reverse().map((p,i)=>{const d=new Date(p.t);return `<li><span><b class="${p.k}">${p.k.toUpperCase()}</b> &nbsp;${d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})}</span><b>${two(d.getHours())}:${two(d.getMinutes())}:${two(d.getSeconds())}</b></li>`}).join(''):'<div class="none">no punches yet — the card is blank</div>'}
+$('#punch').onclick=()=>{const k=punches.length%2===0?'in':'out';punches.push({k,t:Date.now()});try{localStorage.setItem(KEY,JSON.stringify(punches))}catch(e){}renderCard();beep(k==='in'?990:660,.09,.06);log(`punch ${k} registered · ${hours().toFixed(1)} h on the clock`,1)};
+clockTick();setInterval(clockTick,1000);
+/* ---------- quotes tape ---------- */
+const TAPE=['SPY','NVDA','TSLA','AAPL','GOOGL','AMZN','MSFT','META','AMD','GME','COIN','QQQ'];let Q={};
+function tape(){const items=TAPE.map(s=>{const q=Q[s];if(!q||q.error||!isFinite(q.price))return `<div class="q"><b>$${s}</b><span class="dim">—</span></div>`;const ch=(q.price-q.prev)/q.prev*100;return `<div class="q"><b>$${s}</b>${q.price.toFixed(2)} <span class="${ch>=0?'u':'d'}">${ch>=0?'▲':'▼'}${Math.abs(ch).toFixed(2)}%</span></div>`}).join('');$('#roll').innerHTML=items+items}
+async function quotes(){try{const r=await fetch('/api/quote?s='+TAPE.join(','));if(!r.ok)throw 0;const j=await r.json();Q=j.quotes||{};tape();log('quotes updated · '+Object.values(Q).filter(q=>!q.error).length+' stocks')}catch(e){tape()}}
+tape();quotes();setInterval(quotes,90e3);
+/* ---------- config-driven bits ---------- */
+if(CONFIG.x){$('#navx').href=CONFIG.x;$('#navx').style.display=''}
+if(CONFIG.ca){$('#cachipt').textContent='CA '+CONFIG.ca.slice(0,6)+'…'+CONFIG.ca.slice(-4);$('#cachip').classList.add('ca');$('#cachip').onclick=()=>{navigator.clipboard.writeText(CONFIG.ca);$('#cachipt').textContent='copied';setTimeout(()=>$('#cachipt').textContent='CA '+CONFIG.ca.slice(0,6)+'…'+CONFIG.ca.slice(-4),1500)};
+  $('#carow').style.display='';$('#catext').textContent=CONFIG.ca;$('#carow').onclick=()=>{navigator.clipboard.writeText(CONFIG.ca);$('#cacp').textContent='copied';setTimeout(()=>$('#cacp').textContent='Copy',1500)}}
+const L=[];if(CONFIG.ca)L.push(['Buy on Pons',CONFIG.pool||'https://ponsfamily.com/launchpad/'+CONFIG.ca]);if(CONFIG.chart)L.push(['Chart',CONFIG.chart]);if(CONFIG.x)L.push(['X',CONFIG.x]);L.push(['Launch a job on Pons',CONFIG.launchpad]);
+$('#links').innerHTML=L.map(l=>`<a class="btn" href="${l[1]}" target="_blank" rel="noopener">${l[0]}</a>`).join('');
+/* ---------- reveal + nav ---------- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('v');io.unobserve(e.target)}}),{threshold:.12});document.querySelectorAll('.r').forEach(el=>io.observe(el));
+const secs=['board','how','clock','post','token'];const nio=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id))}}),{rootMargin:'-40% 0px -55% 0px'});secs.forEach(id=>nio.observe(document.getElementById(id)));
+</script>
+</body>
+</html>
