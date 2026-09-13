@@ -3,14 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>JOBPAD</title>
-<meta name="description" content="Clock in. Get stocks. Every token launched on JOBPAD is a job that pays its holders in a real stock on Robinhood Chain.">
-<meta property="og:title" content="JOBPAD">
-<meta property="og:description" content="Clock in. Get stocks. Every token is a job. Launch on Pons, Robinhood Chain.">
+<title>Jobpad</title>
+<meta name="description" content="Clock in. Get stocks. Every token on JOBPAD is a job. Every hour its payroll buys the job's stock with $USDG and sends it to holders' wallets.">
+<meta property="og:title" content="Jobpad">
+<meta property="og:description" content="Clock in. Get stocks. Every token is a job. Hourly payroll in real stocks on Robinhood Chain.">
 <meta property="og:image" content="assets/banner.png">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=1">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=1">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=2">
+<link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64.png?v=2">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/favicon-512.png?v=2">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=2">
 <style>
 @font-face{font-family:'Plex';src:url(assets/fonts/IBMPlexMono-Regular.woff2) format('woff2');font-weight:400;font-display:swap}
 @font-face{font-family:'Plex';src:url(assets/fonts/IBMPlexMono-Medium.woff2) format('woff2');font-weight:500;font-display:swap}
@@ -178,9 +180,10 @@ const JOBS=[];
   <div class="in">
     <canvas class="mark" id="mark0" width="24" height="24"></canvas>
     <h1 class="px">Clock in.<br><span class="l2">Get stocks.</span></h1>
-    <p class="sub">Every token launched on JOBPAD is a <b>job</b>. Hold it and you're on the payroll: every trade on the job pays a fee, and the payroll pays holders in the <b>real stock</b> the job is paired to.</p>
+    <p class="sub">Every token launched on JOBPAD is a <b>job</b>. Hold it and you're on the payroll: <b>every hour</b> the payroll takes the job's trade fees, buys the job's <b>real stock</b> with $USDG, and sends it to every holder's wallet.</p>
     <div class="btns"><a class="btn am" href="#post">Post a job</a><a class="btn" href="#clock">Clock in</a></div>
     <div class="chip" id="cachip"><i></i><span id="cachipt">CA — coming soon</span></div>
+    <div class="chip" style="margin-left:10px"><span class="dim">Next payday</span> <span id="nextpay" class="am">--:--</span></div>
   </div>
 </header>
 
@@ -190,7 +193,7 @@ const JOBS=[];
   <div class="wrap">
     <div class="eyebrow r">The shift</div>
     <h2 class="r">Four steps. <span class="am">Only the first one</span> is work.</h2>
-    <p class="lead r">You post a job or you clock in. Trades on the job pay the fee. The payroll pays it out. The job never stops hiring.</p>
+    <p class="lead r">You post a job or you clock in. Trades on the job pay the fee. Every hour the payroll turns it into stock and sends it out. The job never stops hiring.</p>
     <div class="steps r" id="steps"></div>
   </div>
 </section>
@@ -198,7 +201,7 @@ const JOBS=[];
 <section id="board">
   <div class="wrap">
     <div class="head2 r"><div><div class="eyebrow">Job board</div><h2>Open jobs <span class="am" id="jobcount">0</span></h2></div>
-      <p class="lead">Every row is a token on Pons with a payroll wallet as its fee recipient. Read the address on chain, not the title.</p></div>
+      <p class="lead">Every row is a token on Pons with a payroll wallet as its fee recipient. Each one runs payroll every hour.</p></div>
     <div id="boardwrap" class="r"></div>
   </div>
 </section>
@@ -207,7 +210,7 @@ const JOBS=[];
   <div class="wrap">
     <div class="eyebrow r">Post a job</div>
     <h2 class="r">Name it. Pick what it <span class="am">pays in</span>. Sign once.</h2>
-    <p class="lead r">The card on the right is the job's listing. Copy it into the description field on Pons and set the payroll wallet as the fee recipient in the same transaction.</p>
+    <p class="lead r">The card on the right is the job's listing. Copy it into the description field on Pons and set the payroll wallet as the fee recipient in the same transaction. From then on the payroll runs every hour.</p>
     <div class="post r">
       <form class="form" id="form" autocomplete="off">
         <div class="f"><label>Job title <span class="dim">/ token name</span></label><input id="ftitle" maxlength="32" placeholder="e.g. Night Shift"></div>
@@ -216,7 +219,7 @@ const JOBS=[];
           <div class="f"><label>Pays in</label><select id="fpays"></select></div>
         </div>
         <div class="f"><label>One line <span class="dim">/ what the job is</span></label><textarea id="fdesc" maxlength="140" placeholder="Show up. Hold. Get paid in $SPY."></textarea><div class="hint"><span id="dcount">0</span>/140</div></div>
-        <div class="f"><label>Payroll wallet <span class="dim">/ fee recipient</span></label><input id="fwallet" maxlength="42" placeholder="0x… the wallet that pays the job"><div class="hint" id="whint">Set this address as the creator fee recipient on Pons. It receives 70% of every trade fee in the stock the job pays in.</div></div>
+        <div class="f"><label>Payroll wallet <span class="dim">/ fee recipient</span></label><input id="fwallet" maxlength="42" placeholder="0x… the wallet that pays the job"><div class="hint" id="whint">Set this address as the creator fee recipient on Pons. It receives 70% of every trade fee, holds it as $USDG, and every hour buys the job's stock and sends it to holders.</div></div>
       </form>
       <div class="card" id="card">
         <div class="k">Job listing · JOBPAD</div>
@@ -226,7 +229,7 @@ const JOBS=[];
           <div><span>Pays in</span><b id="cpays">$SPY</b></div>
           <div><span>Fee</span><b>1% / trade</b></div>
           <div><span>To payroll</span><b>70% of fees</b></div>
-          <div><span>Chain</span><b>Robinhood Chain</b></div>
+          <div><span>Payday</span><b>Every hour</b></div>
         </div>
         <div class="desc" id="cdesc"></div>
         <div class="cbtns"><button class="btn am" id="copyjob" type="button">Copy listing</button><a class="btn" id="openpons" href="https://ponsvault.com/launch" target="_blank" rel="noopener">Open Pons</a></div>
@@ -241,14 +244,14 @@ const JOBS=[];
   <div class="wrap">
     <div class="eyebrow r">Clock in</div>
     <h2 class="r">The clock on the wall <span class="am">is real.</span></h2>
-    <p class="lead r">Punch in when you start holding, punch out when you're done. The receipt stays on this device. The payroll doesn't care about your hours — it cares that you're on it.</p>
+    <p class="lead r">Punch in when you start holding, punch out when you're done. The receipt stays on this device. The payroll doesn't care about your hours — it runs every hour whether you're clocked in or not, as long as you hold.</p>
     <div class="clock r">
       <div class="punch">
         <canvas id="mark1" width="24" height="24"></canvas>
         <div class="time" id="tnow">--:--:--</div>
         <div class="date" id="tdate">—</div>
         <button class="btn am" id="punch" type="button">Punch in</button>
-        <div class="st"><div><span>Status</span><b id="pstat">Off the clock</b></div><div><span>Punches</span><b id="pcount">0</b></div><div><span>Hours on the clock</span><b id="phours">0.0</b></div></div>
+        <div class="st"><div><span>Status</span><b id="pstat">Off the clock</b></div><div><span>Punches</span><b id="pcount">0</b></div><div><span>Next payday</span><b id="nextpay2" class="am">--:--</b></div></div>
       </div>
       <div class="receipt"><div class="k"><span>Time card · this device</span><span id="rid">No. 0000</span></div><ol id="rlist"></ol></div>
     </div>
@@ -259,17 +262,17 @@ const JOBS=[];
   <div class="wrap">
     <div class="eyebrow r">Token</div>
     <h2 class="r">$JOBPAD is <span class="am">job #0001.</span></h2>
-    <p class="lead r">The board's own token, launched on Pons like every job after it. Its payroll pays in $SPY.</p>
+    <p class="lead r">The board's own token, launched on Pons like every job after it. Its payroll buys $SPY with $USDG and pays it to holders' wallets every hour.</p>
     <div class="tok r">
       <div><span>Pays in</span><b>$SPY</b><small>The stock everyone already owns.</small></div>
       <div><span>Fee</span><b>1% / trade</b><small>70% to the payroll, 30% to Pons.</small></div>
-      <div><span>Supply</span><b>1,000,000,000</b><small>Fixed. No mint.</small></div>
-      <div><span>Pre-mine</span><b>None</b><small>Anything the team holds it bought on the curve.</small></div>
+      <div><span>Payday</span><b>Every hour</b><small>Fees → $USDG → $SPY → your wallet.</small></div>
+      <div><span>Supply</span><b>1,000,000,000</b><small>Fixed. No mint. No pre-mine.</small></div>
     </div>
     <div class="road r">
-      <div><span class="tag am">Live</span><p><b>The board</b>This page: the job listing card, the time clock, live quotes for every stock a job can pay in.</p></div>
+      <div><span class="tag am">Live</span><p><b>Hourly payroll</b>Every hour on the hour: the payroll sweeps the fees, swaps to $USDG, buys the job's stock, and sends it to every holder wallet on the snapshot.</p></div>
       <div><span class="tag">Next</span><p><b>Auto-listing</b>Jobs launched on Pons with a JOBPAD payroll wallet show up on the board by themselves, read from chain.</p></div>
-      <div><span class="tag">Later</span><p><b>Payroll contract</b>A contract that sweeps the payroll and pays holders on chain, with no human in the loop.</p></div>
+      <div><span class="tag">Later</span><p><b>Payroll contract</b>The hourly run moves into a contract: sweep, swap, buy, send — with no human in the loop.</p></div>
     </div>
     <div class="ca r" id="carow" style="display:none"><span class="k">CA</span><code id="catext"></code><span class="cp" id="cacp">Copy</span></div>
     <div class="links r" id="links"></div>
@@ -277,14 +280,14 @@ const JOBS=[];
 </section>
 
 <div id="log"><div class="wrap"><div class="k">Payroll log</div><pre id="logpre"></pre>
-<div class="foot"><span>JOBPAD · Robinhood Chain</span><span>Check the address, not the ticker.</span></div></div></div>
+<div class="foot"><span>JOBPAD · Robinhood Chain</span><span>Payroll runs every hour.</span></div></div></div>
 
 <script>
 const $=s=>document.querySelector(s);
 const PAYS=['SPY','NVDA','TSLA','AAPL','GOOGL','AMZN','MSFT','META','AMD','GME','COIN','QQQ','NFLX','MSTR','HIMS','COST','RDDT','GLD'];
 /* ---------- log ---------- */
 const LOG=[];function log(s,a){LOG.push((a?'<span class="a">':'')+`[${new Date().toISOString().slice(11,19)}] ${s}`+(a?'</span>':''));if(LOG.length>7)LOG.shift();$('#logpre').innerHTML=LOG.join('\n');}
-log('jobpad terminal up · payroll idle',1);
+log('jobpad terminal up · payroll armed · runs every hour on the hour',1);
 /* ---------- sound ---------- */
 let AC=null,SND=false,hum=null;
 function beep(f=880,d=.05,g=.05){if(!SND)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),v=AC.createGain();o.type='square';o.frequency.value=f;v.gain.value=g;o.connect(v);v.connect(AC.destination);o.start();v.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+d);o.stop(AC.currentTime+d)}catch(e){}}
@@ -309,23 +312,23 @@ const ICONS={post:['............','.##########.','.#........#.','.#.oooo...#.','
 function icon(k){const rows=ICONS[k];let s='';rows.forEach((row,y)=>{[...row].forEach((ch,x)=>{if(ch==='#')s+=`<rect x="${x}" y="${y}" width="1" height="1" fill="#ecece8"/>`;else if(ch==='o')s+=`<rect x="${x}" y="${y}" width="1" height="1" fill="#ffb000"/>`})});return `<svg viewBox="0 0 12 12" shape-rendering="crispEdges">${s}</svg>`}
 const STEPS=[['post','Post a job','Anyone launches a job on Pons: a name, a ticker, and the stock it pays in. Its payroll wallet goes in as the fee recipient, in the same transaction.'],
  ['badge','Clock in','Buy the job\'s token. That\'s your badge. No staking, nothing to lock, no list to join.'],
- ['fee','The shift','Every trade on the job pays a 1% fee. 70% of it lands in the payroll wallet, already in the stock the job pays in.'],
- ['pay','Payday','The payroll pays what it collected out to holders, pro rata, in that stock. Not in the job\'s own token.']];
+ ['fee','The shift','Every trade on the job pays a 1% fee. 70% of it lands in the job\'s payroll wallet. The payroll holds it as $USDG until the hour is up.'],
+ ['pay','Payday, every hour','On the hour, the payroll spends its $USDG on the job\'s stock and sends that stock to every holder\'s wallet, pro rata. Not the job\'s token. The stock.']];
 $('#steps').innerHTML=STEPS.map((s,i)=>`<div class="step">${icon(s[0])}<div class="n">0${i+1}</div><h3>${s[1]}</h3><p>${s[2]}</p></div>`).join('');
 /* ---------- job board ---------- */
 function board(){const rows=[];if(CONFIG.ca||true)rows.push({no:'0001',title:'JOBPAD',ticker:'JOBPAD',pays:'SPY',ca:CONFIG.ca,link:CONFIG.pool||(CONFIG.ca?'https://ponsfamily.com/launchpad/'+CONFIG.ca:''),first:true});
   JOBS.forEach(j=>rows.push(j));$('#jobcount').textContent=rows.filter(r=>r.ca).length;
-  const live=rows.filter(r=>r.ca);const html=`<table><thead><tr><th>No.</th><th>Job</th><th>Pays in</th><th>Status</th><th>Payroll</th><th></th></tr></thead><tbody>`+rows.map(r=>`<tr class="job"><td class="dim">#${r.no}</td><td><div class="t">${r.title}</div><div class="s">$${r.ticker}</div></td><td><span class="tag am">$${r.pays}</span></td><td>${r.ca?'<span class="tag hi">Hiring</span>':'<span class="tag">CA coming soon</span>'}</td><td class="s">${r.ca?'70% of fees → payroll':'—'}</td><td style="text-align:right">${r.ca?`<a class="tag" href="${r.link}" target="_blank" rel="noopener">Open on Pons</a>`:''}</td></tr>`).join('')+`</tbody></table>`+(live.length?'':`<div class="empty"><b>No job is hiring yet.</b>The first one is $JOBPAD itself. When its address exists it goes here first.</div>`);
+  const live=rows.filter(r=>r.ca);const html=`<table><thead><tr><th>No.</th><th>Job</th><th>Pays in</th><th>Status</th><th>Payroll</th><th></th></tr></thead><tbody>`+rows.map(r=>`<tr class="job"><td class="dim">#${r.no}</td><td><div class="t">${r.title}</div><div class="s">$${r.ticker}</div></td><td><span class="tag am">$${r.pays}</span></td><td>${r.ca?'<span class="tag hi">Hiring</span>':'<a class="tag" href="#token">CA coming soon</a>'}</td><td class="s">${r.ca?'70% of fees → $USDG → $'+r.pays+' → holders, hourly':'—'}</td><td style="text-align:right">${r.ca?`<a class="tag" href="${r.link}" target="_blank" rel="noopener">Open on Pons</a>`:''}</td></tr>`).join('')+`</tbody></table>`+(live.length?'':`<div class="empty"><b>No job is hiring yet.</b>The first one is $JOBPAD itself. When its address exists it goes here first.</div>`);
   $('#boardwrap').innerHTML=html}board();
 /* ---------- post a job form ---------- */
 $('#fpays').innerHTML=PAYS.map(p=>`<option value="${p}">$${p}</option>`).join('');
 const F={t:$('#ftitle'),k:$('#ftick'),p:$('#fpays'),d:$('#fdesc'),w:$('#fwallet')};
 function listing(){const t=F.t.value.trim()||'Night Shift',k=(F.k.value.trim()||'SHIFT').toUpperCase().replace(/[^A-Z0-9]/g,''),p=F.p.value,d=F.d.value.trim()||`Show up. Hold. Get paid in $${p}.`,w=F.w.value.trim();
-  return {t,k,p,d,w,text:`JOBPAD job #${String(JOBS.length+2).padStart(4,'0')} · ${t} ($${k})\n${d}\nPays in $${p}. 1% fee per trade, 70% to the payroll${w?` (${w})`:''}.\njobpad · Robinhood Chain`}}
+  return {t,k,p,d,w,text:`JOBPAD job #${String(JOBS.length+2).padStart(4,'0')} · ${t} ($${k})\n${d}\nPays in $${p}, every hour. 1% fee per trade, 70% to the payroll${w?` (${w})`:''}: fees → $USDG → $${p} → holders.\njobpad · Robinhood Chain`}}
 function render(){const L=listing();$('#ctitle').textContent=L.t;$('#ctick').textContent='$'+L.k;$('#cpays').textContent='$'+L.p;$('#cdesc').textContent=L.text;$('#dcount').textContent=F.d.value.length;
   const okk=/^[A-Z0-9]{2,8}$/.test(L.k);$('#tickhint').textContent=okk?'2–8 letters':'ticker: 2–8 letters or digits';$('#tickhint').className='hint'+(okk?'':' err');
-  const okw=!L.w||/^0x[0-9a-fA-F]{40}$/.test(L.w);$('#whint').className='hint'+(okw?'':' err');$('#whint').textContent=okw?'Set this address as the creator fee recipient on Pons. It receives 70% of every trade fee in the stock the job pays in.':'that is not a 0x address (40 hex chars)';
-  $('#tweetjob').href='https://x.com/intent/tweet?text='+encodeURIComponent(`New job on JOBPAD: ${L.t} ($${L.k}) — pays in $${L.p}.\n${L.d}\nClock in on Pons, Robinhood Chain.`+(CONFIG.x?'\n'+location.origin:''))}
+  const okw=!L.w||/^0x[0-9a-fA-F]{40}$/.test(L.w);$('#whint').className='hint'+(okw?'':' err');$('#whint').textContent=okw?'Set this address as the creator fee recipient on Pons. It receives 70% of every trade fee, holds it as $USDG, and every hour buys the job\'s stock and sends it to holders.':'that is not a 0x address (40 hex chars)';
+  $('#tweetjob').href='https://x.com/intent/tweet?text='+encodeURIComponent(`New job on JOBPAD: ${L.t} ($${L.k}) — pays in $${L.p}.\n${L.d}\nPayroll runs every hour. Clock in on Pons, Robinhood Chain.`+(CONFIG.x?'\n'+location.origin:''))}
 Object.values(F).forEach(el=>el.addEventListener('input',render));render();
 $('#copyjob').onclick=async()=>{const L=listing();try{await navigator.clipboard.writeText(L.text);$('#cok').textContent='listing copied · paste it into the description on Pons';log(`listing copied · ${L.t} ($${L.k}) pays in $${L.p}`,1)}catch(e){$('#cok').textContent='select the listing above and copy it';}setTimeout(()=>$('#cok').textContent='',4000)};
 $('#openpons').href=CONFIG.launchpad;$('#openpons').addEventListener('click',()=>log('opening pons launch'));
@@ -334,11 +337,13 @@ const KEY='jobpad.timecard';let punches=[];try{punches=JSON.parse(localStorage.g
 function two(n){return String(n).padStart(2,'0')}
 function clockTick(){const n=new Date();$('#tnow').textContent=`${two(n.getHours())}:${two(n.getMinutes())}:${two(n.getSeconds())}`;$('#tdate').textContent=n.toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});renderCard()}
 function hours(){let h=0;for(let i=0;i<punches.length;i+=2){const a=punches[i].t,b=punches[i+1]?punches[i+1].t:Date.now();h+=(b-a)/36e5}return h}
-function renderCard(){const on=punches.length%2===1;$('#pstat').textContent=on?'On the clock':'Off the clock';$('#pstat').style.color=on?'#6fe39b':'';$('#punch').textContent=on?'Punch out':'Punch in';$('#pcount').textContent=punches.length;$('#phours').textContent=hours().toFixed(1);
+function renderCard(){const on=punches.length%2===1;$('#pstat').textContent=on?'On the clock':'Off the clock';$('#pstat').style.color=on?'#6fe39b':'';$('#punch').textContent=on?'Punch out':'Punch in';$('#pcount').textContent=punches.length;
   $('#rid').textContent='No. '+String(Math.min(9999,punches.length)).padStart(4,'0');
   $('#rlist').innerHTML=punches.length?punches.slice().reverse().map((p,i)=>{const d=new Date(p.t);return `<li><span><b class="${p.k}">${p.k.toUpperCase()}</b> &nbsp;${d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})}</span><b>${two(d.getHours())}:${two(d.getMinutes())}:${two(d.getSeconds())}</b></li>`}).join(''):'<div class="none">no punches yet — the card is blank</div>'}
 $('#punch').onclick=()=>{const k=punches.length%2===0?'in':'out';punches.push({k,t:Date.now()});try{localStorage.setItem(KEY,JSON.stringify(punches))}catch(e){}renderCard();beep(k==='in'?990:660,.09,.06);log(`punch ${k} registered · ${hours().toFixed(1)} h on the clock`,1)};
-clockTick();setInterval(clockTick,1000);
+function nextPay(){const n=new Date();const s=3600-(n.getMinutes()*60+n.getSeconds());const t=two(Math.floor(s/60))+':'+two(s%60);$('#nextpay').textContent=t;$('#nextpay2').textContent=t;if(s===3600)log('payroll run · fees → $USDG → stock → holders',1)}
+clockTick();nextPay();setInterval(()=>{clockTick();nextPay()},1000);
+$('#cachip').addEventListener('click',()=>{if(!CONFIG.ca)document.getElementById('token').scrollIntoView({behavior:'smooth'})});
 /* ---------- quotes tape ---------- */
 const TAPE=['SPY','NVDA','TSLA','AAPL','GOOGL','AMZN','MSFT','META','AMD','GME','COIN','QQQ'];let Q={};
 function tape(){const items=TAPE.map(s=>{const q=Q[s];if(!q||q.error||!isFinite(q.price))return `<div class="q"><b>$${s}</b><span class="dim">—</span></div>`;const ch=(q.price-q.prev)/q.prev*100;return `<div class="q"><b>$${s}</b>${q.price.toFixed(2)} <span class="${ch>=0?'u':'d'}">${ch>=0?'▲':'▼'}${Math.abs(ch).toFixed(2)}%</span></div>`}).join('');$('#roll').innerHTML=items+items}
