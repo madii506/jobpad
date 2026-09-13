@@ -1,6 +1,6 @@
 // Live quotes for the stocks a JOBPAD job can pay in. Yahoo first, Stooq fallback. Cached at the edge for 60 s.
 const ALLOWED = ['SPY','NVDA','TSLA','AAPL','GOOGL','AMZN','MSFT','META','AMD','GME','COIN','QQQ','NFLX','MSTR','HIMS','COST','RDDT','GLD'];
-const UA = { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36', 'Accept': 'application/json' };
+const UA = { 'User-Agent': 'Mozilla/5.0 (jobpad; +https://jobpad-theta.vercel.app)' };
 
 async function yahoo(sym) {
   const r = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${sym}?range=5d&interval=1d`, { headers: UA });
@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
   const syms = String(q).toUpperCase().split(',').map(s => s.trim()).filter(s => ALLOWED.includes(s)).slice(0, 12);
   const out = {};
   await Promise.all(syms.map(async s => {
-    try { out[s] = await yahoo(s); } catch (e) { try { out[s] = await stooq(s); } catch (e2) { out[s] = { sym: s, error: true }; } }
+    try { out[s] = await yahoo(s); } catch (e) { try { out[s] = await stooq(s); } catch (e2) { out[s] = { sym: s, error: true, detail: String(e.message) + ' / ' + String(e2.message) }; } }
   }));
   res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
   res.setHeader('Access-Control-Allow-Origin', '*');
