@@ -261,7 +261,7 @@ const JOBS=[];
 <section id="token">
   <div class="wrap">
     <div class="eyebrow r">Token</div>
-    <h2 class="r">$JOBPAD is <span class="am">job #0001.</span></h2>
+    <h2 class="r">$JOB is <span class="am">job #0001.</span></h2>
     <p class="lead r">The board's own token, launched on Pons like every job after it. Its payroll buys $SPY with $USDG and pays it to holders' wallets every hour.</p>
     <div class="tok r">
       <div><span>Pays in</span><b>$SPY</b><small>The stock everyone already owns.</small></div>
@@ -316,9 +316,9 @@ const STEPS=[['post','Post a job','Anyone launches a job on Pons: a name, a tick
  ['pay','Payday, every hour','On the hour, the payroll spends its $USDG on the job\'s stock and sends that stock to every holder\'s wallet, pro rata. Not the job\'s token. The stock.']];
 $('#steps').innerHTML=STEPS.map((s,i)=>`<div class="step">${icon(s[0])}<div class="n">0${i+1}</div><h3>${s[1]}</h3><p>${s[2]}</p></div>`).join('');
 /* ---------- job board ---------- */
-function board(){const rows=[];if(CONFIG.ca||true)rows.push({no:'0001',title:'JOBPAD',ticker:'JOBPAD',pays:'SPY',ca:CONFIG.ca,link:CONFIG.pool||(CONFIG.ca?'https://ponsfamily.com/launchpad/'+CONFIG.ca:''),first:true});
+function board(){const rows=[];if(CONFIG.ca||true)rows.push({no:'0001',title:'JOBPAD',ticker:'JOB',pays:'SPY',ca:CONFIG.ca,link:CONFIG.pool||(CONFIG.ca?'https://ponsfamily.com/launchpad/'+CONFIG.ca:''),first:true});
   JOBS.forEach(j=>rows.push(j));$('#jobcount').textContent=rows.filter(r=>r.ca).length;
-  const live=rows.filter(r=>r.ca);const html=`<table><thead><tr><th>No.</th><th>Job</th><th>Pays in</th><th>Status</th><th>Payroll</th><th></th></tr></thead><tbody>`+rows.map(r=>`<tr class="job"><td class="dim">#${r.no}</td><td><div class="t">${r.title}</div><div class="s">$${r.ticker}</div></td><td><span class="tag am">$${r.pays}</span></td><td>${r.ca?'<span class="tag hi">Hiring</span>':'<a class="tag" href="#token">CA coming soon</a>'}</td><td class="s">${r.ca?'70% of fees → $USDG → $'+r.pays+' → holders, hourly':'—'}</td><td style="text-align:right">${r.ca?`<a class="tag" href="${r.link}" target="_blank" rel="noopener">Open on Pons</a>`:''}</td></tr>`).join('')+`</tbody></table>`+(live.length?'':`<div class="empty"><b>No job is hiring yet.</b>The first one is $JOBPAD itself. When its address exists it goes here first.</div>`);
+  const live=rows.filter(r=>r.ca);const html=`<table><thead><tr><th>No.</th><th>Job</th><th>Pays in</th><th>Status</th><th>Payroll</th><th></th></tr></thead><tbody>`+rows.map(r=>`<tr class="job"><td class="dim">#${r.no}</td><td><div class="t">${r.title}</div><div class="s">$${r.ticker}</div></td><td><span class="tag am">$${r.pays}</span></td><td>${r.ca?'<span class="tag hi">Hiring</span>':'<a class="tag" href="#token">CA coming soon</a>'}</td><td class="s">${r.ca?'70% of fees → $USDG → $'+r.pays+' → holders, hourly':'—'}</td><td style="text-align:right">${r.ca?`<a class="tag" href="${r.link}" target="_blank" rel="noopener">Open on Pons</a>`:''}</td></tr>`).join('')+`</tbody></table>`+(live.length?'':`<div class="empty"><b>No job is hiring yet.</b>The first one is $JOB itself. When its address exists it goes here first.</div>`);
   $('#boardwrap').innerHTML=html}board();
 /* ---------- post a job form ---------- */
 $('#fpays').innerHTML=PAYS.map(p=>`<option value="${p}">$${p}</option>`).join('');
